@@ -1,8 +1,7 @@
 <?php
-namespace App\Services;
+namespace App\Http\Traits;
 
-class HelperService
-{
+trait Helpers {
 
     /**
      * Resolve and return the collection resource instance
@@ -33,5 +32,5 @@ class HelperService
         }
         return $singleResource;
     }
-
+    
 }

@@ -14,5 +14,15 @@ class Client extends Model
     protected $fillable = [
         'name', 'email', 'created_by', 'updated_by'
     ];
+
+    /**
+     * Get all articles assigned to client
+     *
+     * @return Eloquent Relationship
+     */
+    public function articles()
+    {
+        return $this->hasMany('App\Article', 'client_id', 'id');
+    }
     
 }

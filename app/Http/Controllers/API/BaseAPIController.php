@@ -2,17 +2,18 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
-use App\Services\HelperService;
 use App\Http\Controllers\Controller;
+use App\Http\Traits\Helpers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 
 abstract class BaseAPIController extends Controller
 {
+    use Helpers;
+
     protected $model;
     protected $formRequest;
     protected $resourceCollectionClass;
-    protected $helperService;
 
     /**
      * BaseAPIController constructor
@@ -20,18 +21,15 @@ abstract class BaseAPIController extends Controller
      * @param Model $model The model associated to the controller
      * @param FormRequest $formRequest The request validator associated to the model
      * @param string $resourceCollectionClass The request collection class
-     * @param HelperService $helperService The helper service instance
      */
     public function __construct(
         Model $model, 
         FormRequest $formRequest, 
-        string $resourceCollectionClass,
-        HelperService $helperService
+        string $resourceCollectionClass
     ) {
         $this->model = $model;
         $this->formRequest = $formRequest;
         $this->resourceCollectionClass = $resourceCollectionClass;
-        $this->helperService = $helperService;
     }
 
     /**
@@ -41,6 +39,8 @@ abstract class BaseAPIController extends Controller
      */
     public function index(Request $request)
     {
+        // must declare a public array variable called _eagerLoadedOnIndex inside the model
+        $eagerLoadedOnIndex = $this->model->_eagerLoadedOnIndex ?? [];
         $model = $this->model->query();
         $orderByColumn = $request->orderByColumn ?? 'id';
         $orderByValue = $request->orderByValue ?? 'asc';
@@ -48,7 +48,8 @@ abstract class BaseAPIController extends Controller
         if ($orderByColumn) {
             $model->orderBy($orderByColumn, $orderByValue);
         }
-        $resource = $this->helperService->resolveCollectionResource($this->resourceCollectionClass);
+        $model->with($eagerLoadedOnIndex);
+        $resource = $this->resolveCollectionResource($this->resourceCollectionClass);
         return new $resource($model->paginate($limit));
     }
 
@@ -63,7 +64,7 @@ abstract class BaseAPIController extends Controller
         $request->validate($this->formRequest->rules(), $this->formRequest->messages());
         $request['created_by'] = auth()->user()->id;
         $this->model = $this->model->create($request->all());
-        $resource = $this->helperService->resolveSingleResource($this->resourceCollectionClass);
+        $resource = $this->resolveSingleResource($this->resourceCollectionClass);
         return response()->json(new $resource($this->model), 201);
     }
 
@@ -76,7 +77,7 @@ abstract class BaseAPIController extends Controller
     public function show($id)
     {
         $this->model = $this->model::findOrFail($id);
-        $resource = $this->helperService->resolveSingleResource($this->resourceCollectionClass);
+        $resource = $this->resolveSingleResource($this->resourceCollectionClass);
         return response()->json(new $resource($this->model), 200);
     }
 
