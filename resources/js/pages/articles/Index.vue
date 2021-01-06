@@ -1,11 +1,12 @@
 <template>
     <div>
-        
+        <ArticleForm />
     </div>
 </template>
 
 <script>
 import {mapGetters} from 'vuex';
+import ArticleForm from '../../components/articles/Form';
 export default {
     computed: {
         ...mapGetters({
@@ -13,7 +14,7 @@ export default {
         })
     },
     components: {
-
+        ArticleForm
     },
     data() {
         return {

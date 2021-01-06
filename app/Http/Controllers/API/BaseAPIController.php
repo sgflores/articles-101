@@ -44,13 +44,16 @@ abstract class BaseAPIController extends Controller
         $model = $this->model->query();
         $orderByColumn = $request->orderByColumn ?? 'id';
         $orderByValue = $request->orderByValue ?? 'asc';
-        $limit = $request->limit ?? 20;
+        $limit = $request->limit ?? 'all';
         if ($orderByColumn) {
             $model->orderBy($orderByColumn, $orderByValue);
         }
         $model->with($eagerLoadedOnIndex);
         $resource = $this->resolveCollectionResource($this->resourceCollectionClass);
-        return new $resource($model->paginate($limit));
+        if ($limit != 'all') { 
+            return new $resource($model->paginate($limit));
+        }
+        return new $resource($model->get());
     }
 
     /**
