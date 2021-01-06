@@ -10907,3 +10907,7 @@ a.text-dark:focus {
   margin-top: 50px;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
