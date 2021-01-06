@@ -13,6 +13,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::any('api/{any}', 'DefaultController@notFound')->where('any', '.*');
+Route::any('{any}', 'DefaultController@index')->where('any', '.*');
