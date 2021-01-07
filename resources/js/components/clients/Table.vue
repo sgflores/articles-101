@@ -45,8 +45,8 @@ export default {
         }
     },
     methods: {
-        loadClients(page = 1) {
-            this.filters.page = page;
+        loadClients(page) {
+            this.filters.page = page || this.filters.page;
             this.$store.dispatch('clients/loadClients');
         },
         showArticles(list) {

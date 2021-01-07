@@ -51,8 +51,8 @@ export default {
         }
     },
     methods: {
-        loadArticles(page = 1) {
-            this.filters.page = page;
+        loadArticles(page) {
+            this.filters.page = page || this.filters.page;
             this.$store.dispatch('articles/loadArticles');
         },
     },
