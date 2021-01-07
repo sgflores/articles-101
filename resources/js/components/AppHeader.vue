@@ -15,6 +15,11 @@
                         Articles
                     </router-link>
                 </li>
+                <li class="nav-item">
+                    <router-link class="nav-link" exact to="/clients">
+                        Clients
+                    </router-link>
+                </li>
             </ul>
             <button v-if="accessToken" 
                 class="btn btn-outline-danger my-2 my-sm-0" 

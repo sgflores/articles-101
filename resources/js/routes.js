@@ -4,10 +4,12 @@ import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 
 import Articles from './pages/articles/index';
+import Clients from './pages/clients/index';
 import Login from './pages/Login';
 
 let routes = [
     { path: '/', component: Articles , name: 'Articles', meta: { auth: true} },
+    { path: '/clients', component: Clients , name: 'Clients', meta: { auth: true} },
     { path: '/login', component: Login , name: 'Login' },
 ];
 
