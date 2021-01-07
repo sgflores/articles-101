@@ -21,6 +21,7 @@ class Article extends JsonResource
             'body' => $this->body,
             'required_word_count' => $this->required_word_count,
             'client_id' => $this->client_id,
+            'created_at' => $this->created_at
         ];
         if ($this->relationLoaded('client')) {
             $data['client'] = new ClientResource($this->client);

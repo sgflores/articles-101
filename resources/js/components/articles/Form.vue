@@ -87,9 +87,13 @@ export default {
                     icon: 'success',
                     title: 'Successfully Added'
                 });
+                this.$store.dispatch('articles/loadArticles');
             })
             .catch(error => {
-                console.log(error.response);
+                Toast.fire({
+                    icon: 'error',
+                    title: error.response.data.message || 'Invalid Data'
+                });
             });
         }
     },

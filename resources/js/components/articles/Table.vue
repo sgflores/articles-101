@@ -6,59 +6,54 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-sm table-striped">
-                    <thead>
-                        <th class="pointer" v-for="list in header" :key="list.column">
-                            {{list.label}}
-                        </th>
-                    </thead>
+                    <table-sorter :columns="columns" :filters="filters" @applyFilterHandler="loadArticles"></table-sorter>
                     <tbody>
                         <tr v-for="list in articles" :key="list.id">
                             <td>{{list.id}}</td>
                             <td>{{list.created_at}}</td>
                             <td>{{list.client.name}}</td>
                             <td>{{list.client.email}}</td>
-                            <td class="pointer">
-                                <input type="number" required min="0" class="form-control" v-model="list.required_word_count" v-on:keyup.enter="updateCount(list)" >
+                            <td>
+                                <RequiredWordCount :article="list"/>
                             </td>
                         </tr>
                     </tbody>
                </table>
             </div>
+            <pagination :pagination="pagination" :paginateHandler="loadArticles"/>
         </div>
     </div>
 </template>
 
 <script>
+import {mapGetters} from 'vuex';
+import RequiredWordCount from './RequiredWordCount';
 export default {
+    computed: {
+        ...mapGetters({
+            'articles': 'articles/articles',
+            'filters': 'articles/filters',
+            'pagination': 'articles/pagination'
+        })
+    },
+    components: {
+        RequiredWordCount
+    },
     data() {
         return {
-            filters: {
-                orderByColumn: 'id',
-                orderByValue: 'desc',
-                limit: 2
-            },
-            header: [
-                { column: 'id', label: 'Article ID' },
-                { column: 'created_at', label: 'Date Submitted' },
-                { column: 'client.name', label: 'Client Name' },
-                { column: 'client.email', label: 'Client Email' },
-                { column: 'required_word_count', label: 'Required Word Count' }
+            columns: [
+                { column: 'id', label: 'Article ID', sortable: true },
+                { column: 'created_at', label: 'Date Submitted', sortable: true },
+                { column: 'clients.name', label: 'Client Name', sortable: true },
+                { column: 'clients.email', label: 'Client Email', sortable: true },
+                { column: 'required_word_count', label: 'Required Word Count', sortable: true }
             ],
-            articles: []
         }
     },
     methods: {
-        loadArticles() {
-            axios.get('/article', {
-                params: this.filters
-            })
-            .then(response => {
-                console.log(response.data);
-                this.articles = response.data.data;
-            })
-            .catch(error => {
-                console.log(error.response);
-            });
+        loadArticles(page = 1) {
+            this.filters.page = page;
+            this.$store.dispatch('articles/loadArticles');
         },
     },
     mounted() {

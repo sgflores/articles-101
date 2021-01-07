@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Article as ArticleResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class Client extends JsonResource
@@ -14,10 +15,16 @@ class Client extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $data = [
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email
         ];
+        if ($this->relationLoaded('articles')) {
+            $data['articles'] = $this->articles->map(function($article) {
+                return new ArticleResource($article);
+            });
+        }
+        return $data;
     }
 }

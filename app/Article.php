@@ -16,9 +16,44 @@ class Article extends Model
         'created_by', 'updated_by'
     ];
 
-    // _eagerLoaded relationship used in select condition for BaseAPIController@index
+    /**
+     * The related attributes that are eager loaded on index page.
+     *
+     * @var array
+     */
     public $_eagerLoadedOnIndex = [
         'client',
+    ];
+
+    /**
+     * The attributes that are valid as filter options.
+     *
+     * @var array
+     */
+    public $_validFilters = [
+        'id', 'title', 'required_word_count', 'created_at'
+    ];
+
+    /**
+     * The related sortable attributes.
+     *
+     * @var array
+     */
+    public $_relatedSortableColumns = [
+        [
+            'relatedTable' => 'clients',
+            'relatedColumn' => 'clients.email',
+            'relatedPrimaryId' => 'id',
+            'baseTable' => 'articles',
+            'baseForeignId' => 'client_id'
+        ],
+        [
+            'relatedTable' => 'clients',
+            'relatedColumn' => 'clients.name',
+            'relatedPrimaryId' => 'id',
+            'baseTable' => 'articles',
+            'baseForeignId' => 'client_id'
+        ]
     ];
 
     /**

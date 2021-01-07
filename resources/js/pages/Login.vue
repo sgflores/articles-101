@@ -64,8 +64,8 @@ export default {
     data() {
         return {
             form: new Form({
-                email: '',
-                password: '',
+                email: 'admin@gmail.com',
+                password: 'admin',
             }),
         }
     },

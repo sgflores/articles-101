@@ -32,5 +32,23 @@ trait Helpers {
         }
         return $singleResource;
     }
-    
+
+    /**
+     * Search in multi demision array
+     *
+     * @param string $searchKey The key to search
+     * @param string $searchValue The value to search
+     * @param array $array The array to be search on
+     * @return string|int|null
+     */
+    public function searchMultiDimensionArray($searchKey, $searchValue, $array) {
+        foreach ($array as $key => $val) {
+            if (is_array($val) && $val[$searchKey] === $searchValue) {
+                return $val;
+            }
+        }
+        return null;
+    }
+
+
 }

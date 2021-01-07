@@ -39,16 +39,40 @@ abstract class BaseAPIController extends Controller
      */
     public function index(Request $request)
     {
-        // must declare a public array variable called _eagerLoadedOnIndex inside the model
-        $eagerLoadedOnIndex = $this->model->_eagerLoadedOnIndex ?? [];
         $model = $this->model->query();
+
         $orderByColumn = $request->orderByColumn ?? 'id';
         $orderByValue = $request->orderByValue ?? 'asc';
-        $limit = $request->limit ?? 'all';
-        if ($orderByColumn) {
+
+        // basic sort
+        $validFilters = $this->model->_validFilters ?? [];
+        if (in_array($orderByColumn, $validFilters)) {
             $model->orderBy($orderByColumn, $orderByValue);
         }
+
+        // sort on related table
+        $relatedSortableColumns = $this->model->_relatedSortableColumns ?? [];
+        $relatedColumn = $this->searchMultiDimensionArray('relatedColumn', $orderByColumn, $relatedSortableColumns);
+        if ($relatedColumn) {
+            // extract related data
+            $relatedTable = $relatedColumn['relatedTable']; // clients
+            $relatedPrimaryId = $relatedColumn['relatedPrimaryId']; // id
+            $baseTable = $relatedColumn['baseTable']; // articles
+            $baseForeignId = $relatedColumn['baseForeignId']; // client_id
+            // join query and sort by related table
+            $model->leftJoin(
+                $relatedTable, // clients
+                "$baseTable.$baseForeignId", // articles.client_id
+                '=',
+                "$relatedTable.$relatedPrimaryId" // clients.id
+            )->orderBy($orderByColumn, $orderByValue)
+            ->select("$baseTable.*");
+        }
+
+        $eagerLoadedOnIndex = $this->model->_eagerLoadedOnIndex ?? [];
         $model->with($eagerLoadedOnIndex);
+        
+        $limit = $request->limit ?? 'all';
         $resource = $this->resolveCollectionResource($this->resourceCollectionClass);
         if ($limit != 'all') { 
             return new $resource($model->paginate($limit));
@@ -115,4 +139,5 @@ abstract class BaseAPIController extends Controller
         $this->model->delete();
         return response()->json('successfully deleted', 200);
     }
+
 }
