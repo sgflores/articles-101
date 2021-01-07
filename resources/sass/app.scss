@@ -7,10 +7,24 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+@import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import "~@fortawesome/fontawesome-free/scss/solid.scss";
+@import "~@fortawesome/fontawesome-free/scss/brands.scss";
+
 .main {
-    margin-top: 50px;
+    margin-top: 30px;
 }
 
 .pointer {
     cursor: pointer;
+}
+
+.disabled-pagination {
+    cursor: default !important;
+    background-color: rgb(241, 236, 236);
+}
+
+.clickable-label {
+    cursor: pointer;
+    color:#1d68a7;
 }
