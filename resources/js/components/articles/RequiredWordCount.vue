@@ -31,6 +31,7 @@ export default {
     },
     methods: {
         submit() {
+            this.$store.dispatch('updateIsLoading', true);
             this.form.put(`/article/${this.article.id}`)
             .then(response => {
                 Toast.fire({
@@ -43,6 +44,9 @@ export default {
                     icon: 'error',
                     title: error.response.data.message || 'Invalid Data'
                 });
+            })
+            .finally(() => {
+                this.$store.dispatch('updateIsLoading', false);
             });
         }
     }

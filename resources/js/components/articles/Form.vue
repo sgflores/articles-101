@@ -80,6 +80,7 @@ export default {
             this.form.reset();
         },
         submit() {
+            this.$store.dispatch('updateIsLoading', true);
             this.form.post('/article')
             .then(response => {
                 this.resetForm();
@@ -94,6 +95,9 @@ export default {
                     icon: 'error',
                     title: error.response.data.message || 'Invalid Data'
                 });
+            })
+            .finally(() => {
+                this.$store.dispatch('updateIsLoading', false);
             });
         }
     },

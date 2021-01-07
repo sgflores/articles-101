@@ -1,5 +1,6 @@
 <template>
-    <div>
+    <div class="vld-parent">
+        <loader />
         <ArticleForm />
         <hr />
         <ArticleTable />

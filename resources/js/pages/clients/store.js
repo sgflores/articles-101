@@ -36,6 +36,7 @@ const store = {
             context.commit('setClients', clients);
         },
         loadClients(context, payload) {
+            this.dispatch('updateIsLoading', true);
             axios.get('/client', {
                 params: context.state.filters
             })
@@ -48,6 +49,9 @@ const store = {
             })
             .catch(error => {
                 console.log(error.response);
+            })
+            .finally(() => {
+                this.dispatch('updateIsLoading', false);
             });
         },
     },
